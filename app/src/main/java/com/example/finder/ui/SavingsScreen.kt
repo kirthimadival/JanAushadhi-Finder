@@ -31,7 +31,7 @@ fun SavingsScreen(modifier: Modifier = Modifier, totalSavings: Double) {
                 text = "Savings Hub",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1A1C1E)
+                color = Color.Black // True Black Heading
             )
             Text(
                 text = "Impact of switching to Generic Medicines",
@@ -164,7 +164,7 @@ fun SavingsGridCard(label: String, value: String, subtext: String, modifier: Mod
                 text = value,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF1A1C1E)
+                color = Color.Black // True Black
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(

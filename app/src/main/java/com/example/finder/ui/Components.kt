@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -22,81 +23,81 @@ import java.util.Locale
 
 @Composable
 fun JanAushadhiHeader(totalSaved: Double) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.White)
-            .padding(horizontal = 16.dp, vertical = 12.dp)
-            .padding(top = 8.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        color = Color.White,
+        shadowElevation = 0.dp
     ) {
-        Surface(
-            modifier = Modifier.size(42.dp),
-            shape = RoundedCornerShape(12.dp),
-            color = Color(0xFF00BCD4)
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 12.dp)
+                .padding(top = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                imageVector = Icons.Default.MedicalServices,
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.padding(10.dp)
-            )
-        }
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                text = "Jan-Aushadhi",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color(0xFF1A1C1E),
-                fontSize = 20.sp
-            )
-            Text(
-                text = "HEALTHCARE SAVINGS",
-                style = MaterialTheme.typography.labelSmall,
-                color = Color(0xFF00BCD4),
-                fontWeight = FontWeight.Bold,
-                letterSpacing = 0.5.sp
-            )
-        }
-
-        if (totalSaved > 0) {
             Surface(
-                color = Color(0xFFE0F7FA),
-                shape = RoundedCornerShape(16.dp)
+                modifier = Modifier.size(40.dp),
+                shape = RoundedCornerShape(10.dp),
+                color = Color(0xFF00BCD4)
             ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Icon(
+                    imageVector = Icons.Default.MedicalServices,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.padding(8.dp)
+                )
+            }
+
+            Spacer(modifier = Modifier.width(12.dp))
+
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Jan-Aushadhi",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = Color.Black,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = "HEALTHCARE SAVINGS",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color(0xFF00BCD4),
+                    fontWeight = FontWeight.Bold,
+                    letterSpacing = 0.5.sp,
+                    fontSize = 10.sp
+                )
+            }
+
+            if (totalSaved > 0) {
+                Surface(
+                    color = Color(0xFFE0F7FA),
+                    shape = RoundedCornerShape(16.dp)
                 ) {
-                    Box(modifier = Modifier.size(6.dp).background(Color(0xFF2ECC71), CircleShape))
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = String.format(Locale.getDefault(), "₹%.0f Saved", totalSaved),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = Color(0xFF2E7D32),
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(
+                        modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(modifier = Modifier.size(6.dp).background(Color(0xFF2ECC71), CircleShape))
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = String.format(Locale.getDefault(), "₹%.0f Saved", totalSaved),
+                            style = MaterialTheme.typography.labelMedium,
+                            color = Color(0xFF2E7D32),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp
+                        )
+                    }
                 }
             }
-        }
 
-        Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(8.dp))
 
-        IconButton(onClick = { /* Info */ }, modifier = Modifier.size(32.dp)) {
-            Icon(Icons.Default.Info, contentDescription = null, tint = Color.LightGray)
+            IconButton(onClick = { /* Info */ }, modifier = Modifier.size(32.dp)) {
+                Icon(Icons.Default.Info, contentDescription = null, tint = Color.LightGray)
+            }
         }
     }
 }
-
-data class InfoModalData(
-    val title: String,
-    val icon: ImageVector,
-    val iconColor: Color,
-    val items: List<Pair<String, String>>
-)
 
 @Composable
 fun ExploreDashboard() {
@@ -106,8 +107,8 @@ fun ExploreDashboard() {
         Text(
             text = "IMPACT & LITERACY",
             style = MaterialTheme.typography.labelLarge,
-            color = Color.Gray,
-            fontWeight = FontWeight.Bold,
+            color = Color.Black,
+            fontWeight = FontWeight.ExtraBold,
             letterSpacing = 1.sp,
             modifier = Modifier.padding(bottom = 16.dp)
         )
@@ -150,8 +151,8 @@ fun ExploreDashboard() {
                             icon = Icons.Default.AdsClick,
                             iconColor = Color(0xFFFB8C00),
                             items = listOf(
-                                "Health for All" to "Providing quality healthcare at prices affordable to every Indian citizen.",
-                                "Subsidized Price" to "Reducing the out-of-pocket expenditure on medicines by up to 90%.",
+                                "Health for All" to "Providing quality healthcare at prices affordable to every citizen.",
+                                "Subsidized Price" to "Reducing out-of-pocket expenditure on medicines by up to 90%.",
                                 "Vast Network" to "Over 10,000+ Kendras ensuring last-mile delivery of essential drugs."
                             )
                         )
@@ -181,14 +182,13 @@ fun ExploreDashboard() {
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Milestone Card
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1C1E))
+            colors = CardDefaults.cardColors(containerColor = Color.Black)
         ) {
             Row(
-                modifier = Modifier.padding(24.dp),
+                modifier = Modifier.padding(20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
@@ -200,25 +200,15 @@ fun ExploreDashboard() {
                     )
                     Text(
                         text = "Health Literacy Champion",
-                        style = MaterialTheme.typography.titleLarge,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White
+                        color = Color.White,
+                        lineHeight = 22.sp
                     )
                 }
                 Box(contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator(
-                        progress = { 0.75f },
-                        color = Color(0xFF00BCD4),
-                        trackColor = Color.White.copy(alpha = 0.1f),
-                        strokeWidth = 4.dp,
-                        modifier = Modifier.size(56.dp)
-                    )
-                    Text(
-                        text = "75%",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
+                    CircularProgressIndicator(progress = { 0.75f }, color = Color(0xFF00BCD4), trackColor = Color.White.copy(alpha = 0.1f), modifier = Modifier.size(50.dp), strokeWidth = 4.dp)
+                    Text(text = "75%", style = MaterialTheme.typography.labelSmall, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 10.sp)
                 }
             }
         }
@@ -227,74 +217,38 @@ fun ExploreDashboard() {
     if (selectedInfo != null) {
         Dialog(onDismissRequest = { selectedInfo = null }) {
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 4.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
                 shape = RoundedCornerShape(32.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(24.dp)
-                ) {
+                Column(modifier = Modifier.fillMaxWidth().padding(24.dp)) {
                     Surface(
                         modifier = Modifier.size(48.dp),
                         shape = RoundedCornerShape(12.dp),
                         color = selectedInfo!!.iconColor.copy(alpha = 0.1f)
                     ) {
-                        Icon(
-                            imageVector = selectedInfo!!.icon,
-                            contentDescription = null,
-                            tint = selectedInfo!!.iconColor,
-                            modifier = Modifier.padding(12.dp)
-                        )
+                        Icon(imageVector = selectedInfo!!.icon, contentDescription = null, tint = selectedInfo!!.iconColor, modifier = Modifier.padding(12.dp))
                     }
-                    
                     Spacer(modifier = Modifier.height(16.dp))
-                    
-                    Text(
-                        text = selectedInfo!!.title,
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1A1C1E)
-                    )
-                    
+                    Text(text = selectedInfo!!.title, style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold, color = Color.Black)
                     Spacer(modifier = Modifier.height(24.dp))
-                    
                     selectedInfo!!.items.forEach { (heading, desc) ->
                         Row(modifier = Modifier.padding(bottom = 20.dp)) {
-                            Box(
-                                modifier = Modifier
-                                    .padding(top = 8.dp)
-                                    .size(6.dp)
-                                    .background(Color(0xFF2ECC71), CircleShape)
-                            )
+                            Box(modifier = Modifier.padding(top = 8.dp).size(6.dp).background(Color(0xFF2ECC71), CircleShape))
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
-                                Text(
-                                    text = heading,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1A1C1E)
-                                )
-                                Text(
-                                    text = desc,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color.Gray,
-                                    lineHeight = 20.sp
-                                )
+                                Text(text = heading, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.Black)
+                                Text(text = desc, style = MaterialTheme.typography.bodyMedium, color = Color.Gray, lineHeight = 20.sp)
                             }
                         }
                     }
-                    
                     Button(
                         onClick = { selectedInfo = null },
                         modifier = Modifier.fillMaxWidth().height(56.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1A1C1E)),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.Black),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("CLOSE HEADER", fontWeight = FontWeight.Bold, color = Color.White)
+                        Text("CLOSE", fontWeight = FontWeight.Bold, color = Color.White)
                     }
                 }
             }
@@ -303,42 +257,21 @@ fun ExploreDashboard() {
 }
 
 @Composable
-fun DashboardItem(
-    title: String, 
-    subtitle: String, 
-    icon: ImageVector, 
-    iconBg: Color, 
-    iconColor: Color,
-    onClick: () -> Unit
-) {
+fun DashboardItem(title: String, subtitle: String, icon: ImageVector, iconBg: Color, iconColor: Color, onClick: () -> Unit) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable { onClick() }
-            .padding(16.dp),
+        modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Surface(
-            modifier = Modifier.size(48.dp),
-            shape = RoundedCornerShape(12.dp),
-            color = iconBg
-        ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                tint = iconColor,
-                modifier = Modifier.padding(12.dp)
-            )
+        Surface(modifier = Modifier.size(48.dp), shape = RoundedCornerShape(12.dp), color = iconBg) {
+            Icon(imageVector = icon, contentDescription = null, tint = iconColor, modifier = Modifier.padding(12.dp))
         }
         Spacer(modifier = Modifier.width(16.dp))
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+            Text(text = title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.Black)
             Text(text = subtitle, style = MaterialTheme.typography.bodySmall, color = Color.Gray)
         }
-        Icon(
-            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-            contentDescription = null,
-            tint = Color.LightGray
-        )
+        Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = null, tint = Color.LightGray)
     }
 }
+
+data class InfoModalData(val title: String, val icon: ImageVector, val iconColor: Color, val items: List<Pair<String, String>>)

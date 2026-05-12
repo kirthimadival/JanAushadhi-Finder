@@ -16,4 +16,14 @@ interface MedicineDao {
 
     @Query("SELECT COUNT(*) FROM medicines")
     suspend fun getCount(): Int
+
+    // Reminders
+    @Query("SELECT * FROM reminders ORDER BY id DESC")
+    fun getAllReminders(): Flow<List<MedicineReminder>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertReminder(reminder: MedicineReminder)
+
+    @Delete
+    suspend fun deleteReminder(reminder: MedicineReminder)
 }

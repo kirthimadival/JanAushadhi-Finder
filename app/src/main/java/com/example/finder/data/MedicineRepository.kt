@@ -7,6 +7,17 @@ class MedicineRepository(private val medicineDao: MedicineDao) {
     val allMedicines: Flow<List<Medicine>> = medicineDao.getAllMedicines()
     fun searchMedicines(query: String): Flow<List<Medicine>> = medicineDao.searchMedicines(query)
 
+    // Reminders data persistence
+    val allReminders: Flow<List<MedicineReminder>> = medicineDao.getAllReminders()
+
+    suspend fun addReminder(reminder: MedicineReminder) {
+        medicineDao.insertReminder(reminder)
+    }
+
+    suspend fun removeReminder(reminder: MedicineReminder) {
+        medicineDao.deleteReminder(reminder)
+    }
+
     private data class BrandInfo(
         val brand: String,
         val generic: String,

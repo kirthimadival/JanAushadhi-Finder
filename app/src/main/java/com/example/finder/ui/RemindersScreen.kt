@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -33,7 +30,7 @@ fun RemindersScreen(
     var medicineName by remember { mutableStateOf("") }
     var refillDate by remember { mutableStateOf("") }
     
-    val reminders = viewModel.reminders
+    val reminders by viewModel.reminders.collectAsState()
 
     Column(
         modifier = modifier
@@ -53,10 +50,10 @@ fun RemindersScreen(
                         text = "Monthly Refills",
                         style = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1A1C1E)
+                        color = Color.Black // True Black Heading
                     )
                     Text(
-                        text = "Track and track your medicine stock",
+                        text = "Track and manage your medicine stock",
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.Gray
                     )
@@ -68,7 +65,7 @@ fun RemindersScreen(
                     contentColor = Color.White,
                     shape = RoundedCornerShape(12.dp)
                 ) {
-                    Icon(Icons.Default.Add, contentDescription = "Toggle Form")
+                    Icon(if (showForm) Icons.Default.Close else Icons.Default.Add, contentDescription = "Toggle Form")
                 }
             }
 
@@ -96,10 +93,12 @@ fun RemindersScreen(
                             placeholder = { Text("e.g. Telmisartan 40mg", color = Color.LightGray) },
                             shape = RoundedCornerShape(12.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedContainerColor = Color(0xFFF8F9FA),
-                                focusedContainerColor = Color(0xFFF8F9FA),
-                                unfocusedBorderColor = Color.Transparent,
-                                focusedBorderColor = Color(0xFF00BCD4)
+                                unfocusedContainerColor = Color.White, // Stays Pure White
+                                focusedContainerColor = Color.White,   // Stays Pure White
+                                unfocusedBorderColor = Color(0xFFF1F3F4),
+                                focusedBorderColor = Color(0xFF00BCD4),
+                                focusedTextColor = Color.Black,
+                                unfocusedTextColor = Color.Black
                             )
                         )
 
@@ -120,10 +119,12 @@ fun RemindersScreen(
                             trailingIcon = { Icon(Icons.Default.CalendarMonth, contentDescription = null, tint = Color.Gray) },
                             shape = RoundedCornerShape(12.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedContainerColor = Color(0xFFF8F9FA),
-                                focusedContainerColor = Color(0xFFF8F9FA),
-                                unfocusedBorderColor = Color.Transparent,
-                                focusedBorderColor = Color(0xFF00BCD4)
+                                unfocusedContainerColor = Color.White, // Stays Pure White
+                                focusedContainerColor = Color.White,   // Stays Pure White
+                                unfocusedBorderColor = Color(0xFFF1F3F4),
+                                focusedBorderColor = Color(0xFF00BCD4),
+                                focusedTextColor = Color.Black,
+                                unfocusedTextColor = Color.Black
                             )
                         )
 
@@ -178,7 +179,8 @@ fun RemindersScreen(
                         Text(
                             text = "No active trackers",
                             style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black // True Black
                         )
                         Text(
                             text = "Add your monthly medications to\nnever miss a refill at Jan-Aushadhi\nstores.",
@@ -192,7 +194,7 @@ fun RemindersScreen(
             } else {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth().weight(1f, fill = false)
                 ) {
                     items(reminders) { reminder ->
                         Card(
@@ -213,9 +215,12 @@ fun RemindersScreen(
                                     Icon(Icons.Default.Notifications, null, tint = Color(0xFF00BCD4), modifier = Modifier.padding(8.dp))
                                 }
                                 Spacer(modifier = Modifier.width(16.dp))
-                                Column {
-                                    Text(reminder.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(reminder.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.Black)
                                     Text("Next Refill: ${reminder.date}", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
+                                }
+                                IconButton(onClick = { viewModel.deleteReminder(reminder) }) {
+                                    Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.LightGray)
                                 }
                             }
                         }

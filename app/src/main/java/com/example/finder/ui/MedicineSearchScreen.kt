@@ -43,7 +43,7 @@ fun MedicineSearchScreen(
                 .fillMaxSize()
                 .padding(horizontal = 20.dp)
         ) {
-            // Constant Search Bar
+            // Updated Search Bar: Stays White when touched
             Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = searchQuery,
@@ -56,23 +56,22 @@ fun MedicineSearchScreen(
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedBorderColor = Color(0xFF00BCD4),
                     unfocusedBorderColor = Color(0xFFF1F3F4),
-                    focusedContainerColor = Color(0xFFF8F9FA),
-                    unfocusedContainerColor = Color(0xFFF8F9FA)
+                    focusedContainerColor = Color.White, // Stays Pure White
+                    unfocusedContainerColor = Color.White,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
                 )
             )
 
             if (selectedMedicine != null) {
-                // Comparison Detail View (Matches Screenshot 19:27)
                 ComparisonView(
                     medicine = selectedMedicine!!,
                     onAddResult = { viewModel.addSavings(selectedMedicine!!.savings) },
                     onReset = { viewModel.clearSelection() }
                 )
             } else if (searchQuery.isEmpty()) {
-                // Main Dashboard
                 ExploreDashboard()
             } else {
-                // Result List (Matches list style in screenshot 19:27)
                 Spacer(modifier = Modifier.height(24.dp))
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
@@ -122,7 +121,7 @@ fun SearchResultItem(medicine: Medicine, onClick: () -> Unit) {
                     text = medicine.brandedName,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A1C1E)
+                    color = Color.Black
                 )
                 Text(
                     text = medicine.genericName.uppercase(),
@@ -166,7 +165,7 @@ fun ComparisonView(medicine: Medicine, onAddResult: () -> Unit, onReset: () -> U
                     text = medicine.brandedName,
                     style = MaterialTheme.typography.headlineMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color(0xFF1A1C1E)
+                    color = Color.Black
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
@@ -204,7 +203,6 @@ fun ComparisonView(medicine: Medicine, onAddResult: () -> Unit, onReset: () -> U
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            // Market Price Card (White Background, Gray text)
             Card(
                 modifier = Modifier
                     .weight(1f)
@@ -227,7 +225,6 @@ fun ComparisonView(medicine: Medicine, onAddResult: () -> Unit, onReset: () -> U
                 }
             }
 
-            // Aushadhi Price Card (Green Background, White text)
             Card(
                 modifier = Modifier
                     .weight(1f)
@@ -252,11 +249,10 @@ fun ComparisonView(medicine: Medicine, onAddResult: () -> Unit, onReset: () -> U
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Daily Savings Bar
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.cardColors(containerColor = Color(0xFF1A1C1E))
+            colors = CardDefaults.cardColors(containerColor = Color.Black)
         ) {
             Row(
                 modifier = Modifier.padding(12.dp),
@@ -290,14 +286,13 @@ fun ComparisonView(medicine: Medicine, onAddResult: () -> Unit, onReset: () -> U
                     shape = RoundedCornerShape(16.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Text("ADD RESULT", color = Color(0xFF1A1C1E), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
+                    Text("ADD RESULT", color = Color.Black, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Info Sections
         InfoSection(title = "GENERIC CONTENT (SALT)", content = medicine.genericName.uppercase(), icon = Icons.Default.Info)
         Spacer(modifier = Modifier.height(24.dp))
         InfoSection(title = "INDICATIONS/USES", content = medicine.usage, icon = Icons.Default.Warning)
@@ -333,7 +328,7 @@ fun InfoSection(title: String, content: String, icon: androidx.compose.ui.graphi
         Column {
             Text(title, style = MaterialTheme.typography.labelSmall, color = Color.Gray, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(4.dp))
-            Text(content, style = MaterialTheme.typography.bodyMedium, color = Color(0xFF1A1C1E), fontWeight = FontWeight.Bold)
+            Text(content, style = MaterialTheme.typography.bodyMedium, color = Color.Black, fontWeight = FontWeight.Bold)
         }
     }
 }

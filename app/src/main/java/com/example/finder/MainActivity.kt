@@ -29,7 +29,6 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         
-        // Initialize Database and Repository
         val database = AppDatabase.getDatabase(this)
         val repository = MedicineRepository(database.medicineDao())
         val viewModelFactory = MedicineViewModelFactory(application, repository)
@@ -53,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         NavigationBar(
                             containerColor = Color.White,
-                            tonalElevation = 8.dp
+                            tonalElevation = 0.dp
                         ) {
                             val navBackStackEntry by navController.currentBackStackEntryAsState()
                             val currentDestination = navBackStackEntry?.destination
@@ -64,15 +63,15 @@ class MainActivity : ComponentActivity() {
                                         Icon(
                                             imageVector = screen.icon, 
                                             contentDescription = null,
-                                            tint = if (selected) Color(0xFF007991) else Color.Gray
+                                            tint = if (selected) Color(0xFF007991) else Color(0xFF49454F)
                                         ) 
                                     },
                                     label = { 
                                         Text(
                                             text = screen.label, 
                                             style = MaterialTheme.typography.labelSmall,
-                                            color = if (selected) Color(0xFF007991) else Color.Gray,
-                                            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
+                                            color = if (selected) Color(0xFF007991) else Color(0xFF49454F),
+                                            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
                                         ) 
                                     },
                                     selected = selected,

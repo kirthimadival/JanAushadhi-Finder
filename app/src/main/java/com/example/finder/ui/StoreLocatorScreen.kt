@@ -8,9 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.outlined.HelpOutline
 import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.HelpOutline
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,6 +24,9 @@ import com.example.finder.data.StoreRepository
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 @Composable
 fun StoreLocatorScreen(modifier: Modifier = Modifier, totalSavings: Double) {
@@ -52,7 +54,7 @@ fun StoreLocatorScreen(modifier: Modifier = Modifier, totalSavings: Double) {
         JanAushadhiHeader(totalSaved = totalSavings)
 
         Column(modifier = Modifier.padding(horizontal = 16.dp)) {
-            // Store Search Bar
+            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 value = storeSearchQuery,
                 onValueChange = { storeSearchQuery = it },
@@ -65,17 +67,15 @@ fun StoreLocatorScreen(modifier: Modifier = Modifier, totalSavings: Double) {
                     focusedBorderColor = Color(0xFF00BCD4),
                     unfocusedBorderColor = Color.Transparent,
                     focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White
+                    unfocusedContainerColor = Color.White,
+                    focusedTextColor = Color.Black,
+                    unfocusedTextColor = Color.Black
                 )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Map Section
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
-            ) {
+            Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
                 Card(
                     modifier = Modifier.fillMaxSize(),
                     shape = RoundedCornerShape(24.dp),
@@ -96,9 +96,7 @@ fun StoreLocatorScreen(modifier: Modifier = Modifier, totalSavings: Double) {
                 }
                 
                 Surface(
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(top = 12.dp),
+                    modifier = Modifier.align(Alignment.TopCenter).padding(top = 12.dp),
                     color = Color.White,
                     shape = RoundedCornerShape(16.dp),
                     shadowElevation = 2.dp
@@ -109,7 +107,7 @@ fun StoreLocatorScreen(modifier: Modifier = Modifier, totalSavings: Double) {
                     ) {
                         Icon(Icons.Default.LocationOn, null, tint = Color.Red, modifier = Modifier.size(12.dp))
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("NEAR YOUR LOCATION", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Color.Gray)
+                        Text("NEAR YOUR LOCATION", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Color.Black)
                     }
                 }
             }
@@ -125,7 +123,7 @@ fun StoreLocatorScreen(modifier: Modifier = Modifier, totalSavings: Double) {
                     text = "NEARBY KENDRAS (${filteredStores.size})",
                     style = MaterialTheme.typography.labelLarge,
                     fontWeight = FontWeight.Bold,
-                    color = Color.Gray,
+                    color = Color.Black,
                     letterSpacing = 1.sp
                 )
                 Text(
@@ -158,6 +156,10 @@ fun StoreLocatorScreen(modifier: Modifier = Modifier, totalSavings: Double) {
 @Composable
 fun StoreItemUI(store: Store, onStoreClick: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
+    var medicineName by remember { mutableStateOf("") }
+    var stockStatus by remember { mutableStateOf<String?>(null) }
+    var isChecking by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     Card(
         modifier = Modifier
@@ -178,59 +180,32 @@ fun StoreItemUI(store: Store, onStoreClick: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(store.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                    Text(store.name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold, color = Color.Black)
                     Text(store.address, style = MaterialTheme.typography.bodySmall, color = Color.Gray, maxLines = 1)
                     Spacer(modifier = Modifier.height(4.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Surface(
-                            color = Color(0xFFF1F3F4),
-                            shape = RoundedCornerShape(4.dp)
-                        ) {
-                            Text(store.distance, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold)
+                        Surface(color = Color(0xFFF1F3F4), shape = RoundedCornerShape(4.dp)) {
+                            Text(store.distance, modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Color.Black)
                         }
                         Spacer(modifier = Modifier.width(8.dp))
-                        Surface(
-                            color = if (store.isOpen) Color(0xFF2ECC71) else Color.Red,
-                            shape = RoundedCornerShape(4.dp)
-                        ) {
-                            Text(
-                                if (store.isOpen) "• OPEN" else "• CLOSED",
-                                modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = Color.White,
-                                fontWeight = FontWeight.Bold
-                            )
+                        Surface(color = if (store.isOpen) Color(0xFF2ECC71) else Color.Red, shape = RoundedCornerShape(4.dp)) {
+                            Text(if (store.isOpen) "• OPEN" else "• CLOSED", modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp), style = MaterialTheme.typography.labelSmall, color = Color.White, fontWeight = FontWeight.Bold)
                         }
                     }
                 }
-                Icon(
-                    if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                    contentDescription = null,
-                    tint = Color.LightGray
-                )
+                Icon(if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore, contentDescription = null, tint = Color.LightGray)
             }
 
             AnimatedVisibility(visible = expanded) {
                 Column {
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        OutlinedButton(
-                            onClick = { /* Call */ },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(12.dp),
-                            contentPadding = PaddingValues(12.dp)
-                        ) {
+                        OutlinedButton(onClick = {}, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp)) {
                             Icon(Icons.Default.Call, null, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(8.dp))
                             Text("Call")
                         }
-                        Button(
-                            onClick = { /* Directions */ },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(12.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00BCD4)),
-                            contentPadding = PaddingValues(12.dp)
-                        ) {
+                        Button(onClick = {}, modifier = Modifier.weight(1f), shape = RoundedCornerShape(12.dp), colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00BCD4))) {
                             Icon(Icons.Default.Directions, null, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(8.dp))
                             Text("Directions")
@@ -239,7 +214,7 @@ fun StoreItemUI(store: Store, onStoreClick: () -> Unit) {
                     
                     Spacer(modifier = Modifier.height(16.dp))
                     
-                    // Stock Inquiry Section
+                    // Stock Inquiry Section (Restored and Simulated)
                     Card(
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(16.dp),
@@ -248,18 +223,67 @@ fun StoreItemUI(store: Store, onStoreClick: () -> Unit) {
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(Icons.Outlined.HelpOutline, null, tint = Color(0xFF00BCD4), modifier = Modifier.size(16.dp))
+                                Icon(Icons.AutoMirrored.Outlined.HelpOutline, null, tint = Color(0xFF00BCD4), modifier = Modifier.size(16.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
-                                Text("STOCK INQUIRY", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Color(0xFF00BCD4))
+                                Text("STOCK INQUIRY", style = MaterialTheme.typography.labelSmall, fontWeight = FontWeight.Bold, color = Color.Black)
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            OutlinedButton(
-                                onClick = { /* Stock Inquiry */ },
+                            OutlinedTextField(
+                                value = medicineName,
+                                onValueChange = { medicineName = it },
+                                modifier = Modifier.fillMaxWidth(),
+                                placeholder = { Text("Enter medicine name...", fontSize = 12.sp, color = Color.Gray) },
+                                shape = RoundedCornerShape(8.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedContainerColor = Color.White,
+                                    unfocusedContainerColor = Color.White,
+                                    focusedTextColor = Color.Black,
+                                    unfocusedTextColor = Color.Black,
+                                    focusedBorderColor = Color(0xFF00BCD4)
+                                ),
+                                singleLine = true
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Button(
+                                onClick = {
+                                    if (medicineName.isNotBlank()) {
+                                        isChecking = true
+                                        scope.launch {
+                                            delay(1200) // Professional simulation delay
+                                            // Randomized logic to make it feel like a real backend check
+                                            stockStatus = if (Random.nextBoolean()) "IN STOCK" else "OUT OF STOCK"
+                                            isChecking = false
+                                        }
+                                    }
+                                },
                                 modifier = Modifier.fillMaxWidth(),
                                 shape = RoundedCornerShape(8.dp),
-                                colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.Gray)
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00BCD4)),
+                                enabled = !isChecking
                             ) {
-                                Text("Check Availability for Specific Medicine", fontSize = 12.sp)
+                                if (isChecking) {
+                                    CircularProgressIndicator(modifier = Modifier.size(18.dp), color = Color.White, strokeWidth = 2.dp)
+                                } else {
+                                    Text("Check Availability", fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                                }
+                            }
+                            
+                            stockStatus?.let { status ->
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    color = if (status == "IN STOCK") Color(0xFFE8F5E9) else Color(0xFFFFEBEE),
+                                    shape = RoundedCornerShape(8.dp)
+                                ) {
+                                    Text(
+                                        text = status,
+                                        modifier = Modifier.padding(10.dp),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        fontWeight = FontWeight.ExtraBold,
+                                        color = if (status == "IN STOCK") Color(0xFF2E7D32) else Color.Red,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
                             }
                         }
                     }

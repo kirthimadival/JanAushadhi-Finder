@@ -2,7 +2,6 @@ package com.example.finder.ui
 
 import android.app.Application
 import android.content.Context
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.finder.data.Medicine
@@ -30,8 +29,9 @@ class MedicineSearchViewModel(
     private val _totalSavings = MutableStateFlow(prefs.getFloat("total_savings", 0f).toDouble())
     val totalSavings: StateFlow<Double> = _totalSavings.asStateFlow()
 
-    // Persistent list of reminders for the current session
-    val reminders = mutableStateListOf<MedicineReminder>()
+    // Persistent reminders from Room database
+    val reminders: StateFlow<List<MedicineReminder>> = repository.allReminders
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     val searchResults: StateFlow<List<Medicine>> = _searchQuery
         .debounce(100)
@@ -69,7 +69,15 @@ class MedicineSearchViewModel(
 
     fun addReminder(name: String, date: String) {
         if (name.isNotBlank() && date.isNotBlank()) {
-            reminders.add(MedicineReminder(System.currentTimeMillis(), name, date))
+            viewModelScope.launch {
+                repository.addReminder(MedicineReminder(name = name, date = date))
+            }
+        }
+    }
+
+    fun deleteReminder(reminder: MedicineReminder) {
+        viewModelScope.launch {
+            repository.removeReminder(reminder)
         }
     }
 }
